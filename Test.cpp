@@ -1,206 +1,246 @@
 #include "doctest.h"
 #include "FamilyTree.hpp"
-using namespace family;
 #include <string>
 
-// a macro to simply check exception b must be init to FALSE!
-#define checkExp(T, f, b)     \
-    {                         \
-        try                   \
-        {                     \
-            T.f;              \
-        }                     \
-        catch (exception & e) \
-        {                     \
-            b = true;         \
-        }                     \
-    }
-#define initTree(T)                        \
-    {                                      \
-        T.addFather("Yosef", "Yaakov")     \
-            .addMother("Yosef", "Rachel")  \
-            .addFather("Yaakov", "Isaac")  \
-            .addMother("Yaakov", "Rivka")  \
-            .addFather("Isaac", "Avraham") \
-            .addFather("Avraham", "Terah") \
-            .addMother("Rivka", "m")       \
-            .addMother("m", "m1");         \
-    }
 using namespace std;
-Tree T("Yosef");
-Tree T2("Noa");
-TEST_CASE("Test add")
-{
-    T.addFather("Yosef", "Yaakov")
-        .addMother("Yosef", "Rachel")
-        .addFather("Yaakov", "Isaac")
-        .addMother("Yaakov", "Rivka")
-        .addFather("Isaac", "Avraham")
-        .addFather("Avraham", "Terah")
-        .addMother("Rivka", "m")
-        .addMother("m", "m1");
-    CHECK(T.find("father") == "Yaakov");
-    CHECK(T.find("mother") == "Rachel");
-    CHECK(T.find("grandfather") == "Issac");
-    CHECK(T.find("grandmother") == "Rivka");
-    CHECK(T.find("great-grandfather") == "Avraham");
-    CHECK(T.find("great-great-grandfather") == "Terah");
-    CHECK(T.find("great-grandmother") == "m");
-    CHECK(T.find("great-great-grandmother") == "m1");
-    bool b = false;
-    checkExp(T, addFather("Yaakov", "ff"), b)
-        CHECK(b == true);
-    b = false;
-    checkExp(T, addMother("Yaakov", "r2"), b)
-        CHECK(b == true);
-    b = false;
-    checkExp(T, addMother("Rivka", "r2"), b)
-        CHECK(b == true);
-    b = false;
-    checkExp(T, addMother("m", "r2"), b)
-        CHECK(b == true);
+using namespace family;
+
+
+TEST_CASE("realtion test") {
+family::Tree T ("Yosef"); // Yosef is the "root" of the tree (the youngest person).
+	T.addFather("Yosef", "Yaakov")   // Tells the tree that the father of Yosef is Yaakov.
+	 .addMother("Yosef", "Rachel")   // Tells the tree that the mother of Yosef is Rachel.
+	 .addFather("Yaakov", "Isaac")
+	 .addMother("Yaakov", "Rivka")
+	 .addFather("Isaac", "Avraham")
+     .addMother("Isaac", "Sarah")
+	 .addFather("Avraham", "Terah");
+
+     family::Tree T2 ("jojo");
+     T2.addFather("jojo", "jos")
+        .addMother("jojo", "rivka")
+        .addFather("jos", "jotaro")
+        .addMother("jos", "holly")
+        .addFather("rivka", "gio")
+        .addMother("rivka", "dio")
+        .addFather("jotro", "kill")
+        .addMother("jotro", "hoe")
+        .addFather("holly", "shit")
+        .addMother("holly", "omg")
+        .addFather("dio", "snapdragon")
+        .addMother("dio", "joska")
+        .addFather("gio", "lisa-lisa")
+        .addMother("gio", "mario")
+        .addFather("lisa-lisa", "muda")
+        .addMother("lisa-lisa", "wry")
+        .addFather("muda", "golden")
+        .addMother("muda", "wind");
+
+    CHECK( T.relation("Yaakov") ==string("father"));
+    CHECK( T.relation("Rachel") ==string("mother"));
+    CHECK( T.relation("Isaac") ==string("grandfather"));
+    CHECK( T.relation("Rivka") ==string("grandmother"));
+    CHECK( T.relation("Avraham") ==string("great-grandfather"));
+    CHECK( T.relation("Sarah") ==string("great-grandmother"));
+    CHECK( T.relation("Terah") ==string("great-great-grandfather"));
+    CHECK(T.relation("Yosef")==string("me"));
+
+    CHECK( T2.relation("jos") ==string("father"));
+    CHECK( T2.relation("rivka") ==string("mother"));
+    CHECK( T2.relation("jotaro") ==string("grandfather"));
+    CHECK( T2.relation("gio") ==string("grandfather"));
+    CHECK( T2.relation("holly") ==string("grandmother"));
+    CHECK( T2.relation("dio") ==string("grandmother"));
+    CHECK( T2.relation("kill") ==string("great-grandfather"));
+    CHECK( T2.relation("shit") ==string("great-grandfather"));
+    CHECK( T2.relation("lisa-lisa") ==string("great-grandfather"));
+    CHECK( T2.relation("snapdragon") ==string("great-grandfather"));
+    CHECK( T2.relation("hoe") ==string("great-grandmother"));
+    CHECK( T2.relation("omg") ==string("great-grandmother"));
+    CHECK( T2.relation("mario") ==string("great-grandmother"));
+    CHECK( T2.relation("joska") ==string("great-grandmother"));
+    CHECK( T2.relation("muda") ==string("great-great-grandfather"));
+    CHECK( T2.relation("why") ==string("great-great-grandmother"));
+    CHECK( T2.relation("golden") ==string("great-great-great-grandfather"));
+    CHECK( T2.relation("wind") ==string("great-great-great-grandmother"));
+    CHECK(T2.relation("jojo")==string("me"));
 }
+TEST_CASE("find Test") {
+
+family::Tree T2 ("jojo");
+     T2.addFather("jojo", "jos")
+        .addMother("jojo", "rivka")
+        .addFather("jos", "jotaro")
+        .addMother("jos", "holly")
+        .addFather("rivka", "gio")
+        .addMother("rivka", "dio")
+        .addFather("jotro", "kill")
+        .addMother("jotro", "hoe")
+        .addFather("holly", "shit")
+        .addMother("holly", "omg")
+        .addFather("dio", "snapdragon")
+        .addMother("dio", "joska")
+        .addFather("gio", "lisa-lisa")
+        .addMother("gio", "mario")
+        .addFather("lisa-lisa", "muda")
+        .addMother("lisa-lisa", "wry")
+        .addFather("muda", "golden")
+        .addMother("muda", "wind");
+
+    CHECK( T2.find("father") ==string("jos"));
+    CHECK( T2.find("mother") ==string("rivka"));
+    CHECK( T2.find("grandfather") ==string("jotaro"));
+    CHECK( T2.find("grandfather") ==string("gio"));
+    CHECK( T2.find("grandmother") ==string("holly"));
+    CHECK( T2.find("grandmother") ==string("dio"));
+    CHECK( T2.find("great-grandfather") ==string("kill"));
+    CHECK( T2.find("great-grandfather") ==string("shit"));
+    CHECK( T2.find("great-grandfather") ==string("lisa-lisa"));
+    CHECK( T2.find("great-grandfather") ==string("snapdragon"));
+    CHECK( T2.find("great-grandmother") ==string("hoe"));
+    CHECK( T2.find("great-grandmother") ==string("omg"));
+    CHECK( T2.find("great-grandmother") ==string("mario"));
+    CHECK( T2.find("great-grandmother") ==string("joska"));
+    CHECK( T2.find("great-great-grandfather") ==string("wry"));
+    CHECK( T2.find("great-great-grandfather") ==string("muda"));
+    CHECK( T2.find("great-great-great-grandfather") ==string("wind"));
+    CHECK( T2.find("great-great-great-grandfather") ==string("golden"));
+    CHECK( T2.find("me")==string("jojo"));
+}
+
+
 TEST_CASE("Test remove")
 {
-    T.remove("m1");
-    CHECK(T.relation("m1") == "unrealted");
-    T.remove("Rivka");
-    CHECK(T.relation("m") == "unrealted");
-    CHECK(T.relation("Rivka") == "unrealted");
-    T.remove("Yaakov");
-    CHECK(T.relation("Issac") == "unrealted");
-    CHECK(T.relation("Terah") == "unrealted");
-    CHECK(T.relation("Avraham") == "unrealted");
-    bool b = false;
-    checkExp(T, remove("Yosef"), b)
-        CHECK(b == true);
-        b = false;
-    checkExp(T, remove("Yaakov"), b)
-        CHECK(b == true);
-        b = false;
-    checkExp(T, remove("m1"), b)
-        CHECK(b == true);
-        b = false;
-    checkExp(T, remove("Issac"), b)
-        CHECK(b == true);
-        b = false;
-    checkExp(T, remove("yossi"), b)
-        CHECK(b == true);
+    family::Tree T2 ("jojo");
+    T2.addFather("jojo", "jos")
+        .addMother("jojo", "rivka")
+        .addFather("jos", "jotaro")
+        .addMother("jos", "holly")
+        .addFather("rivka", "gio")
+        .addMother("rivka", "dio")
+        .addFather("jotro", "kill")
+        .addMother("jotro", "hoe")
+        .addFather("holly", "shit")
+        .addMother("holly", "omg")
+        .addFather("dio", "snapdragon")
+        .addMother("dio", "joska")
+        .addFather("gio", "lisa-lisa")
+        .addMother("gio", "mario")
+        .addFather("lisa-lisa", "muda")
+        .addMother("lisa-lisa", "wry")
+        .addFather("muda", "golden")
+        .addMother("muda", "wind");
+
+    T2.remove("wind");
+    CHECK(T2.relation("wind") == "unrealted");
+    T2.remove("lisa-lisa");
+    CHECK(T2.relation("lisa-lisa") == "unrealted");
+    CHECK(T2.relation("muda") == "unrealted");
+    CHECK(T2.relation("wry") == "unrealted");
+    CHECK(T2.relation("golden") == "unrealted");
+    T2.remove("holly");
+    CHECK(T2.relation("holly") == "unrealted");
+    CHECK(T2.relation("omg") == "unrealted");
+    CHECK(T2.relation("shit") == "unrealted");
+    T2.remove("dio");
+    CHECK(T2.relation("snapdragon") == "unrealted");
+    CHECK(T2.relation("dio") == "unrealted");
+    CHECK(T2.relation("joska") == "unrealted");
+    T2.remove("gio");
+    CHECK(T2.relation("gio") == "unrealted");
+    CHECK(T2.relation("mario") == "unrealted");
 }
-TEST_CASE("Test realtion")
+
+TEST_CASE("Test add")
 {
-    T2.addFather("Noa", "Shai")
-        .addMother("Noa", "Shani")
-        .addFather("Shai", "Pinchas")
-        .addMother("Shai", "Riki")
-        .addFather("Shani", "Silvan")
-        .addMother("Shani", "Rachel")
-        .addFather("Pinchas", "Avraham")
-        .addMother("Pinchas", "Sara")
-        .addFather("Riki", "Yakov")
-        .addMother("Riki", "Lea")
-        .addFather("Silvan", "Meni")
-        .addMother("Silvan", "Hadas")
-        .addFather("Rachel", "Almog")
-        .addMother("Rachel", "Ariel")
-        .addFather("Avraham", "Yosef")
-        .addMother("Avraham", "Shontal")
-        .addFather("Shontal", "Haim")
-        .addMother("Shontal", "Sheli");
+    family::Tree T2 ("jojo");
+    T2.addFather("jojo", "jos")
+        .addMother("jojo", "rivka")
+        .addFather("jos", "jotaro")
+        .addMother("jos", "holly")
+        .addFather("rivka", "gio")
+        .addMother("rivka", "dio")
+        .addFather("jotro", "kill")
+        .addMother("jotro", "hoe")
+        .addFather("holly", "shit")
+        .addMother("holly", "omg")
+        .addFather("dio", "snapdragon")
+        .addMother("dio", "joska")
+        .addFather("gio", "lisa-lisa")
+        .addMother("gio", "mario")
+        .addFather("lisa-lisa", "muda")
+        .addMother("lisa-lisa", "wry")
+        .addFather("muda", "golden")
+        .addMother("muda", "wind");
 
-    CHECK(T2.find("Shai")=="father");
-    CHECK(T2.find("Shani")=="mother");
-    CHECK(T2.find("Pinchas")=="grandfather");
-    CHECK(T2.find("Silvan")=="grandfather");
-    CHECK(T2.find("Riki")=="grandmother");
-    CHECK(T2.find("Rachel")=="grandmother");
-    CHECK(T2.find("Avraham")=="great-grandfather");
-    CHECK(T2.find("Meni")=="great-grandfather");
-    CHECK(T2.find("Yakov")=="great-grandfather");
-    CHECK(T2.find("Almog")=="great-grandfather");
-    CHECK(T2.find("Sara")=="great-grandmother");
-    CHECK(T2.find("Lea")=="great-grandmother");
-    CHECK(T2.find("Hadas")=="great-grandmother");
-    CHECK(T2.find("Ariel")=="great-grandmother");
-    CHECK(T2.find("Yosef")=="great-great-grandfather");
-    CHECK(T2.find("Shontal")=="great-great-grandmother");
-    CHECK(T2.find("Haim")=="great-great-great-grandfather");
-    CHECK(T2.find("Sheli")=="great-great-great-grandmother");
-    CHECK(T2.find("Beni")=="unrelated");
-
-    CHECK(T2.find("Pinchas")=="father");
-    CHECK(T2.find("Rachel")=="mother");
-    CHECK(T2.find("Avraham")=="grandfather");
-    CHECK(T2.find("Meni")=="grandfather");
-    CHECK(T2.find("Lea")=="grandmother");
-    CHECK(T2.find("Ariel")=="grandmother");
-    CHECK(T2.find("Yosef")=="great-grandfather");
-    CHECK(T2.find("Silvan")=="great-grandfather");
-    CHECK(T2.find("Shai")=="great-grandfather");
-    CHECK(T2.find("Dvir")=="great-grandfather");
-    CHECK(T2.find("Riki")=="great-grandmother");
-    CHECK(T2.find("Rivka")=="great-grandmother");
-    CHECK(T2.find("Shontal")=="great-grandmother");
-    CHECK(T2.find("Shani")=="great-grandmother");
-    CHECK(T2.find("Haim")=="great-great-grandfather");
-    CHECK(T2.find("Noa")=="great-great-grandmother");
-    CHECK(T2.find("Beni")=="great-great-great-grandfather");
-    CHECK(T2.find("Hadas")=="great-great-great-grandmother");
-    CHECK(T2.find("Shani")=="unrelated");
+    CHECK( T2.relation("jos") ==string("father"));
+    CHECK( T2.relation("rivka") ==string("mother"));
+    CHECK( T2.relation("jotaro") ==string("grandfather"));
+    CHECK( T2.relation("gio") ==string("grandfather"));
+    CHECK( T2.relation("holly") ==string("grandmother"));
+    CHECK( T2.relation("dio") ==string("grandmother"));
+    CHECK( T2.relation("kill") ==string("great-grandfather"));
+    CHECK( T2.relation("shit") ==string("great-grandfather"));
+    CHECK( T2.relation("lisa-lisa") ==string("great-grandfather"));
+    CHECK( T2.relation("snapdragon") ==string("great-grandfather"));
+    CHECK( T2.relation("hoe") ==string("great-grandmother"));
+    CHECK( T2.relation("omg") ==string("great-grandmother"));
+    CHECK( T2.relation("mario") ==string("great-grandmother"));
+    CHECK( T2.relation("joska") ==string("great-grandmother"));
+    CHECK( T2.relation("muda") ==string("great-great-grandfather"));
+    CHECK( T2.relation("why") ==string("great-great-grandmother"));
+    CHECK( T2.relation("golden") ==string("great-great-great-grandfather"));
+    CHECK( T2.relation("wind") ==string("great-great-great-grandmother"));
+    CHECK(T2.relation("jojo")==string("me"));
 }
-TEST_CASE("Test find")
-{   
-    CHECK(T2.find("father")=="Shai");
-    CHECK(T2.find("mother")=="Shani");
-    CHECK(T2.find("grandfather")=="Pinchas");
-    CHECK(T2.find("grandfather")=="Silvan");
-    CHECK(T2.find("grandmother")=="Riki");
-    CHECK(T2.find("grandmother")=="Rachel");
-    CHECK(T2.find("great-grandfather")=="Avraham");
-    CHECK(T2.find("great-grandfather")=="Meni");
-    CHECK(T2.find("great-grandfather")=="Yakov");
-    CHECK(T2.find("great-grandfather")=="Almog");
-    CHECK(T2.find("great-grandmother")=="Sara");
-    CHECK(T2.find("great-grandmother")=="Lea");
-    CHECK(T2.find("great-grandmother")=="Hadas");
-    CHECK(T2.find("great-grandmother")=="Ariel");
-    CHECK(T2.find("great-great-grandfather")=="Yosef");
-    CHECK(T2.find("great-great-grandmother")=="Shontal");
-    CHECK(T2.find("great-great-great-grandfather")=="Haim");
-    CHECK(T2.find("great-great-great-grandmother")=="Sheli");
 
-    CHECK(T2.find("father")=="Pinchas");
-    CHECK(T2.find("mother")=="Rachel");
-    CHECK(T2.find("grandfather")=="Avraham");
-    CHECK(T2.find("grandfather")=="Meni");
-    CHECK(T2.find("grandmother")=="Lea");
-    CHECK(T2.find("grandmother")=="Ariel");
-    CHECK(T2.find("great-grandfather")=="Yosef");
-    CHECK(T2.find("great-grandfather")=="Silvan");
-    CHECK(T2.find("great-grandfather")=="Shai");
-    CHECK(T2.find("great-grandfather")=="Dvir");
-    CHECK(T2.find("great-grandmother")=="Riki");
-    CHECK(T2.find("great-grandmother")=="Rivka");
-    CHECK(T2.find("great-grandmother")=="Shontal");
-    CHECK(T2.find("great-grandmother")=="Shani");
-    CHECK(T2.find("great-great-grandfather")=="Haim");
-    CHECK(T2.find("great-great-grandmother")=="Noa");
-    CHECK(T2.find("great-great-great-grandfather")=="Beni");
-    CHECK(T2.find("great-great-great-grandmother")=="Hadas");
 
-    CHECK(T2.find("father")=="Oded");
-    CHECK(T2.find("father")=="Ilan");
-    CHECK(T2.find("father")=="Kobi");
-    CHECK(T2.find("father")=="Natan");
-    CHECK(T2.find("father")=="Geri");
-
-    bool b = false;
-    checkExp(T2, find("great-great-great-great-grandmother"), b)
-        CHECK(b == true);
-    b = false;
-    checkExp(T2, find("great-great-great-great-grandfather"), b)
-        CHECK(b == true);
-    b = false;
-    checkExp(T2, find("great-grandfather"), b)
-        CHECK(b==true);
+TEST_CASE("Test all") {
+    family::Tree T3 ("yali"); 
+	T3.addFather("yali", "moshe")   
+	 .addMother("yali", "oshri")   
+	 .addFather("moshe", "dorit")
+	 .addMother("moshe", "dori")
+	 .addFather("oshri", "papi")
+     .addMother("oshri", "mami")
+     .addMother("papi", "Hana")
+     .addMother("Hana", "pop")
+	 .addFather("pop", "dan");
+      //test realation function
+    CHECK( T3.relation("moshe") ==string("father"));
+    CHECK( T3.relation("oshri") ==string("mother"));
+    CHECK( T3.relation("dorit") ==string("grandfather"));
+    CHECK( T3.relation("mami") ==string("grandmother"));
+    CHECK( T3.relation("Hana") ==string("great-grandmother"));
+    CHECK( T3.relation("pop") ==string("great-great-grandmother"));
+    CHECK( T3.relation("dan") ==string("great-great-great-grandfather"));
+    CHECK(T3.relation("yali")==string("me"));
+        //test find function
+    CHECK( T3.relation("father") ==string("moshe"));
+    CHECK( T3.relation("mother") ==string("oshri"));
+    CHECK( T3.relation("grandfather") ==string("dorit"));
+    CHECK( T3.relation("grandmother") ==string("mami"));
+    CHECK( T3.relation("great-grandmother") ==string("Hana"));
+    CHECK( T3.relation("great-great-grandmother") ==string("pop"));
+    CHECK( T3.relation("great-great-great-grandmother") ==string("dan"));
+    CHECK(T3.relation("me")==string("yali"));
+     //test realation function
+    CHECK( T3.relation("moshe") ==string("father"));
+    CHECK( T3.relation("oshri") ==string("mother"));
+    CHECK( T3.relation("dorit") ==string("grandfather"));
+    CHECK( T3.relation("mami") ==string("grandmother"));
+    CHECK( T3.relation("Hana") ==string("great-grandmother"));
+    CHECK( T3.relation("pop") ==string("great-great-grandmother"));
+    CHECK( T3.relation("dan") ==string("great-great-great-grandfather"));
+    CHECK(T3.relation("yali")==string("me"));
+        //test find function
+    CHECK( T3.relation("father") ==string("moshe"));
+    CHECK( T3.relation("mother") ==string("oshri"));
+    CHECK( T3.relation("grandfather") ==string("dorit"));
+    CHECK( T3.relation("grandmother") ==string("mami"));
+    CHECK( T3.relation("great-grandmother") ==string("Hana"));
+    CHECK( T3.relation("great-great-grandmother") ==string("pop"));
+    CHECK( T3.relation("great-great-great-grandmother") ==string("dan"));
+    CHECK(T3.relation("me")==string("yali"));
+}
 }
